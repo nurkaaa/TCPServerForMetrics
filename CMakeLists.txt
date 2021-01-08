@@ -26,4 +26,5 @@ Session.h
 Storage.h
 Utility.cpp
 Utility.h
+Logger.h
 )
