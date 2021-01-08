@@ -3,6 +3,7 @@
 
 #include "Utility.h"
 #include "Storage.h"
+#include "Logger.h"
 
 #include <iostream>
 #include <queue>
@@ -19,7 +20,7 @@ using message_handler = std::function<void(std::string)>;
 using error_handler = std::function<void()>;
 
 
-class Session : public std::enable_shared_from_this<Session>
+class Session : public std::enable_shared_from_this<Session>, public LoggerDecorator
 {
 public:
 	typedef tcp::socket					socket_t;
@@ -31,6 +32,7 @@ public:
 
 	void start(message_handler&& on_message, error_handler&& on_error);
 
+	std::string getEndpointString();
 	void post(const std::string& command);
 	void asyncRead();
 	void asyncWrite();

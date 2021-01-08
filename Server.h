@@ -10,7 +10,7 @@
 #include <boost/optional.hpp>
 
 
-class Server
+class Server : public LoggerDecorator
 {
 public:
 	typedef boost::asio::ip::tcp::acceptor acceptor_t;
@@ -28,7 +28,6 @@ private:
 	acceptor_t								m_acceptor;
 	boost::optional<Session::socket_t>		m_socket;
 	std::unordered_set<Session::pointer_t>	m_clients;
-	//std::unordered_map<Utility::Data>		m_storage;
 };
 
 

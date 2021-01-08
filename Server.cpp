@@ -25,6 +25,7 @@ void Server::asyncAccept()
 			client->post("Welcome to the server\n\r");
 			post("We have a new user\n\r");
 			m_clients.insert(client);
+			logInfo(client->getEndpointString() + " connected to the server");
 			client->start
 			(
 				boost::bind(&Server::post, this, _1),

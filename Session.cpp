@@ -12,6 +12,11 @@ void Session::start(message_handler&& on_message, error_handler&& on_error)
 	asyncRead();
 }
 
+std::string Session::getEndpointString()
+{
+	return m_socket.remote_endpoint().address().to_string();
+}
+
 void Session::post(const std::string& command)
 {
 	bool idle = m_outgoing.empty();
