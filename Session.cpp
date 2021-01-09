@@ -1,8 +1,12 @@
 #include "Session.h"
+#include "Logger.h"
+
+#include <boost/lexical_cast.hpp>
 
 Session::Session(socket_t&& socket) :
 	m_socket(std::move(socket))
 {
+	LOG_INFO(getEndpointString() + " connected to the server\n");
 }
 
 void Session::start(message_handler&& on_message, error_handler&& on_error)
@@ -14,7 +18,7 @@ void Session::start(message_handler&& on_message, error_handler&& on_error)
 
 std::string Session::getEndpointString()
 {
-	return m_socket.remote_endpoint().address().to_string();
+	return m_socket.remote_endpoint().address().to_string() + ":" + boost::lexical_cast<std::string>(m_socket.remote_endpoint().port());
 }
 
 void Session::post(const std::string& command)
@@ -67,11 +71,13 @@ void Session::onRead(error_code error, size_t bytes)
 			}
 			else
 			{
+				LOG_DEBUG("Unknown command: " + command.str());
 				post("Error: Unknown command\n\r");
 			}
 		}
 		else
 		{
+			LOG_DEBUG("Unknown command: " + command.str());
 			post("Error: Unknown command\n\r");
 		}
 
@@ -79,6 +85,7 @@ void Session::onRead(error_code error, size_t bytes)
 	}
 	else
 	{
+		LOG_ERROR("Error: " + error.message());
 		m_socket.close(error);
 		on_error();
 	}

@@ -3,6 +3,7 @@
 
 #include "Session.h"
 
+
 #include <memory>
 #include <unordered_set>
 #include <unordered_map>
@@ -10,7 +11,7 @@
 #include <boost/optional.hpp>
 
 
-class Server : public LoggerDecorator
+class Server
 {
 public:
 	typedef boost::asio::ip::tcp::acceptor acceptor_t;

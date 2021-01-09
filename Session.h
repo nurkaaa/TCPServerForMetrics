@@ -3,9 +3,8 @@
 
 #include "Utility.h"
 #include "Storage.h"
-#include "Logger.h"
 
-#include <iostream>
+
 #include <queue>
 
 #include <boost/asio.hpp>
@@ -20,7 +19,7 @@ using message_handler = std::function<void(std::string)>;
 using error_handler = std::function<void()>;
 
 
-class Session : public std::enable_shared_from_this<Session>, public LoggerDecorator
+class Session : public std::enable_shared_from_this<Session>
 {
 public:
 	typedef tcp::socket					socket_t;

@@ -1,57 +1,43 @@
-#ifndef LOGGER_H
-#define LOGGER_H
-
-#include <iostream>
 #include <fstream>
 
-#include <boost/noncopyable.hpp>
-#include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>
 
 
-//To use this logger you need inherit from this class
-//There are three levels:
-//	DEBUG - Debug lines
-//	INFO  - Info lines
-//	Error - Error lines
+#define LOG(formatString, level, ...) log("log.txt", formatString, LOG_LEVELS::LOG_INFO, __FILE__, __FUNCTION__, __LINE__)
 
-class LoggerDecorator : boost::noncopyable
+#define LOG_INFO(formatString)  LOG(formatString, LOG_LEVELS::LOG_INFO)
+#define LOG_DEBUG(formatString) LOG(formatString, LOG_LEVELS::LOG_DEBUG)
+#define LOG_ERROR(formatString) LOG(formatString, LOG_LEVELS::LOG_ERROR)
+
+
+enum LOG_LEVELS
 {
-public:
-	LoggerDecorator()
-	{
-		boost::filesystem::path logFolder = "Log";
-		boost::filesystem::create_directory(logFolder);
-
-		m_logFile.open("Log/Log.txt");
-	}
-
-	~LoggerDecorator()
-	{
-		m_logFile.close();
-	}
-
-	void logInfo(std::string& message)
-	{
-		std::string logMessage = "INFO: " __FILE__ + std::string(__FUNCTION__) + boost::lexical_cast<std::string>(__LINE__) + ": " + message + "\n";
-		m_logFile << logMessage;
-	}
-
-	void logDebug(std::string& message)
-	{
-		std::string logMessage = "DEBUG: " __FILE__ + std::string(__FUNCTION__) + boost::lexical_cast<std::string>(__LINE__) + ": " + message + "\n";
-		m_logFile << logMessage;
-	}
-
-	void logError(std::string& message)
-	{
-		std::string logMessage = "ERROR: " __FILE__ + std::string(__FUNCTION__) + boost::lexical_cast<std::string>(__LINE__) + ": " + message + "\n";
-		m_logFile << logMessage;
-	}
-
-private:
-	std::ofstream m_logFile;
-
+	LOG_DEBUG = 0,
+	LOG_INFO = 1,
+	LOG_ERROR = 2
 };
 
-#endif
+void log(std::string filename, std::string message, const LOG_LEVELS logLevel, std::string file, std::string function, int line)
+{
+	std::ofstream logFile;
+	logFile.open(filename, std::ofstream::out | std::ofstream::app);
+
+	std::string toLog = "";
+
+	switch (logLevel)
+	{
+		case 0:
+			toLog += "DEBUG: ";
+			break;
+		case 1:
+			toLog += "INFO: ";
+			break;
+		case 2:
+			toLog += "ERROR: ";
+			break;
+	}
+
+	toLog += file + " " + function + " LINE: " + boost::lexical_cast<std::string>(line) + ": " + message;
+	logFile << toLog;
+	logFile.close();
+}
